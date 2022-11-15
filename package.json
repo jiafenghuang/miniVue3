@@ -1,0 +1,23 @@
+{
+  "name": "minivue3",
+  "version": "1.0.0",
+  "description": "code a miniVue3 BY MYSELF",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiafenghuang/miniVue3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jiafenghuang/miniVue3/issues"
+  },
+  "homepage": "https://github.com/jiafenghuang/miniVue3#readme",
+  "devDependencies": {
+    "vitest": "^0.25.2"
+  }
+}
