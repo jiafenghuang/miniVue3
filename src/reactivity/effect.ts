@@ -22,12 +22,12 @@ class ReactiveEffect {
     }
 }
 
-let targetMap = new WeakMap()
+let targetMap = new Map()
 
 let activeEffect: any;
 
 export function track (target: object, key: PropertyKey){
-    if(!activeEffect) return
+    // if(!activeEffect) return
     let depsMap = targetMap.get(target)
 
     if(!depsMap){
@@ -38,31 +38,22 @@ export function track (target: object, key: PropertyKey){
     let dep = depsMap.get(key)
 
     if(!dep){
-        dep = createDeps()
+        dep = new Set()
         depsMap.set(key, dep)
     }
 
-    if(!dep.has(activeEffect)){
-        dep.add(activeEffect)
-        //activeEffect.dep.push(dep)
-    }
+    dep.add(activeEffect)
 }
 export function trigger (target: object, key: PropertyKey, value: any){
     let depsMap = targetMap.get(target)
     if(!depsMap) return;
-    let deps: Array<any> = [];
-    let effectFns: Array<any> = [];
+    // let deps: Array<any> = [];
     let dep = depsMap.get(key);
-    deps.push(...dep);
-    deps.forEach((dep)=>{
-        effectFns.push(...dep)
-    })
-    for(let effectFn of effectFns){
-
+    for(let effectFn of dep){
         effectFn.run()
     }
 }
 export function effect(fn: Function){
-    const effect = new ReactiveEffect(fn)
-    effect.run()
+    const _effect = new ReactiveEffect(fn)
+    _effect.run()
 }

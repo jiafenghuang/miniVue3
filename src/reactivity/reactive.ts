@@ -5,8 +5,9 @@ const baseHander = {
         return Reflect.get(target, key)
     },
     set:(target: object,key: PropertyKey,value: any) =>{
+        const res = Reflect.set(target, key, value)
         trigger(target, key, value)
-        return Reflect.set(target, key, value)
+        return res
     }
 }
 export function reactive(target){
