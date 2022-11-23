@@ -1,11 +1,11 @@
-import { describe, expect, test } from "vitest"
+import { describe, expect, test,vi } from "vitest"
 import { effect } from "../effect"
 import { reactive } from "../reactive"
 
 describe("test", () => {
 
   test.skip("observe the basic properties", () => {
-    let dummy;
+    let dummy: any;
     const counter = reactive({ num: 0 });
     effect(() => (dummy = counter.num));
     expect(dummy).toBe(0);
@@ -14,7 +14,7 @@ describe("test", () => {
   })
 
   test.skip("observe the multiple properties", () => {
-    let dummy;
+    let dummy: any;
     const counter = reactive({ num1: 0, num2: 0 });
     effect(() => (dummy = counter.num1 + counter.num2));
     expect(dummy).toBe(0);
@@ -27,7 +27,7 @@ describe("test", () => {
   })
 
   test.skip("observe the boolean properties", () => {
-    let dummy;
+    let dummy: any;
     const counter = reactive({ isOK: true, num1: 0, num2: 0 });
     effect(() => (dummy = counter.isOK ? (counter.num1 + counter.num2) : counter.num1));
     expect(dummy).toBe(0);
@@ -45,7 +45,7 @@ describe("test", () => {
 
 
   test.skip("should observe function call chains", () => {
-    let dummy;
+    let dummy: any;
     const counter = reactive({ num: 0 });
     effect(() => (dummy = getNum()));
 
@@ -59,7 +59,7 @@ describe("test", () => {
   });
 
   test.skip("observe the nested properties", () => {
-    let dummy;
+    let dummy: any;
     const counter = reactive({ nested: { num: 0 } });
     effect(() => (dummy = counter.nested.num));
     expect(dummy).toBe(0);
@@ -67,8 +67,8 @@ describe("test", () => {
     expect(dummy).toBe(8);
   })
 
-  test("should handle multiple effects", () => {
-    let dummy1, dummy2;
+  test.skip("should handle multiple effects", () => {
+    let dummy1: any, dummy2: any;
     const counter = reactive({ num: 0 });
     effect(() => (dummy1 = counter.num));
     effect(() => (dummy2 = counter.num));
@@ -95,9 +95,27 @@ describe("test", () => {
     expect(r).toBe("foo")
 
   })
-  // test("scheduler", () => {
+  test("scheduler", () => {
+    let dummy: any,run: any
+    const scheduler = vi.fn(()=>{
+      run = runner
+    })
+    const obj = reactive({foo:1})
 
-  // })
+    const runner = effect(()=>{
+      dummy = obj.foo
+    },{scheduler})
+    expect(scheduler).not.toHaveBeenCalled()  
+    expect(dummy).toBe(1)
+    obj.foo++
+    expect(scheduler).toHaveBeenCalledTimes(1)
+    expect(dummy).toBe(1);
+    run()
+
+    expect(dummy).toBe(2)
+
+
+  })
   // test("stop", () => {
 
   // })
