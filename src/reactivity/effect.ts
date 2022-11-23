@@ -16,7 +16,7 @@ class ReactiveEffect {
 
     run() {
         activeEffect = this
-        cleanupEffect(this)
+        //cleanupEffect(this)
         return this._fn()
     }
 
@@ -65,4 +65,5 @@ function cleanupEffect(effect) {
 export function effect(fn: Function) {
     const _effect = new ReactiveEffect(fn)
     _effect.run()
+    return _effect.run.bind(_effect)
 }
