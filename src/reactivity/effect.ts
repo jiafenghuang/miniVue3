@@ -16,9 +16,10 @@ class ReactiveEffect {
 
     run() {
         activeEffect = this
-        //cleanupEffect(this)
-        this._fn()
+        cleanupEffect(this)
+        return this._fn()
     }
+
 }
 
 let targetMap = new WeakMap()
@@ -37,12 +38,12 @@ export function track(target: object, key: PropertyKey) {
     let dep = depsMap.get(key)
 
     if (!dep) {
-        dep = new Set()
+        dep = createDeps()
         depsMap.set(key, dep)
     }
 
     dep.add(activeEffect)
-    //activeEffect.deps = dep
+    activeEffect.deps = dep
 }
 export function trigger(target: object, key: PropertyKey) {
     let depsMap = targetMap.get(target)
@@ -55,11 +56,11 @@ export function trigger(target: object, key: PropertyKey) {
     }
 }
 
-// function cleanupEffect(effect) {
-//     effect.deps.forEach(dep => {
-//         dep.delete(effect)
-//     })
-// }
+function cleanupEffect(effect) {
+    effect.deps.forEach(dep => {
+        dep.delete(effect)
+    })
+}
 
 export function effect(fn: Function) {
     const _effect = new ReactiveEffect(fn)
