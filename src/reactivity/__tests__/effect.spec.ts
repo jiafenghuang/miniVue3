@@ -1,10 +1,10 @@
 import { describe, expect, test,vi } from "vitest"
-import { effect } from "../effect"
+import { effect ,stop} from "../effect"
 import { reactive } from "../reactive"
 
 describe("test", () => {
 
-  test.skip("observe the basic properties", () => {
+  test("observe the basic properties", () => {
     let dummy: any;
     const counter = reactive({ num: 0 });
     effect(() => (dummy = counter.num));
@@ -13,7 +13,7 @@ describe("test", () => {
     expect(dummy).toBe(7);
   })
 
-  test.skip("observe the multiple properties", () => {
+  test("observe the multiple properties", () => {
     let dummy: any;
     const counter = reactive({ num1: 0, num2: 0 });
     effect(() => (dummy = counter.num1 + counter.num2));
@@ -26,7 +26,7 @@ describe("test", () => {
     expect(dummy).toBe(18);
   })
 
-  test.skip("observe the boolean properties", () => {
+  test("observe the boolean properties", () => {
     let dummy: any;
     const counter = reactive({ isOK: true, num1: 0, num2: 0 });
     effect(() => (dummy = counter.isOK ? (counter.num1 + counter.num2) : counter.num1));
@@ -44,7 +44,7 @@ describe("test", () => {
 
 
 
-  test.skip("should observe function call chains", () => {
+  test("should observe function call chains", () => {
     let dummy: any;
     const counter = reactive({ num: 0 });
     effect(() => (dummy = getNum()));
@@ -58,7 +58,7 @@ describe("test", () => {
     expect(dummy).toBe(2);
   });
 
-  test.skip("observe the nested properties", () => {
+  test("observe the nested properties", () => {
     let dummy: any;
     const counter = reactive({ nested: { num: 0 } });
     effect(() => (dummy = counter.nested.num));
@@ -67,7 +67,7 @@ describe("test", () => {
     expect(dummy).toBe(8);
   })
 
-  test.skip("should handle multiple effects", () => {
+  test("should handle multiple effects", () => {
     let dummy1: any, dummy2: any;
     const counter = reactive({ num: 0 });
     effect(() => (dummy1 = counter.num));
@@ -116,10 +116,35 @@ describe("test", () => {
 
 
   })
-  // test("stop", () => {
+  test("stop", () => {
+    let dummy ;
+    const obj = reactive({prop:1})
+    const runner = effect(()=>{
+      dummy = obj.prop
+    })
 
-  // })
-  // test("events: onStop", () => {
+    obj.prop = 2
+    expect(dummy).toBe(2)
+    stop(runner)
+    obj.prop = 3
+    expect(dummy).toBe(2)
 
-  // });
+    runner() //to call effect
+    expect(dummy).toBe(3)
+
+  })
+  test("events: onStop", () => {
+    const obj = reactive({prop:1})
+
+    let dummy ;
+    const onStop = vi.fn()
+
+    const runner = effect(()=>{
+      dummy = obj.prop
+    },{onStop})
+
+
+    stop(runner)
+    expect(onStop).toBeCalledTimes(1)
+  });
 });

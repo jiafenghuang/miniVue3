@@ -3,3 +3,5 @@ const getType = (value: any) => {
 }
 
 export const isObject = (value: Object) => getType(value) === "Object"
+
+export const extend = Object.assign

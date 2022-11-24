@@ -7,12 +7,17 @@
     }
 }
 */
+import { extend } from '../shared'
 import { createDeps } from './deps'
 class ReactiveEffect {
     private _fn: Function
-
+    deps: []
+    active: boolean
+    onStop?: Function
     constructor(fn: Function,public scheduler?) {
         this._fn = fn
+        this.deps = []
+        this.active = true
         this.scheduler = scheduler
     }
 
@@ -20,6 +25,17 @@ class ReactiveEffect {
         activeEffect = this
         //cleanupEffect(this)
         return this._fn()
+    }
+    stop(){
+        if(this.active){
+            cleanupEffect(this)
+            
+            if(this.onStop){
+                this.onStop()
+            }
+            this.active = false
+        }
+        
     }
 
 }
@@ -45,7 +61,7 @@ export function track(target: object, key: PropertyKey) {
     }
 
     dep.add(activeEffect)
-    activeEffect.deps = dep
+    activeEffect.deps.push(dep) 
 }
 export function trigger(target: object, key: PropertyKey) {
     let depsMap = targetMap.get(target)
@@ -70,11 +86,16 @@ function cleanupEffect(effect) {
 }
 
 export function effect(fn: Function,options:any={} ) {
-    const scheduler = options.scheduler
+    const _effect = new ReactiveEffect(fn,options.scheduler)
 
-    
-    const _effect = new ReactiveEffect(fn,scheduler)
-    
+    extend(_effect,options)
     _effect.run()
-    return _effect.run.bind(_effect)
+    
+    const runner = _effect.run.bind(_effect)
+    runner.effect = _effect 
+    return runner
+}
+
+export function stop(runner){
+    runner.effect.stop() 
 }
