@@ -11,6 +11,6 @@ export function readonly(target){
     return createActiveObject(target,readonlyHandler)
 }
 function createActiveObject(target ,baseHandler){
-    return new Proxy(target, readonlyHandler)
+    return new Proxy(target, baseHandler)
     
 }

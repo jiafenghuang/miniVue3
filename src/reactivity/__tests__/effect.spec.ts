@@ -118,7 +118,7 @@ describe("test", () => {
   })
   test("stop", () => {
     let dummy ;
-    const obj = reactive({prop:1})
+    const obj = reactive({ prop:1 })
     const runner = effect(()=>{
       dummy = obj.prop
     })
