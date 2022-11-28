@@ -16,7 +16,15 @@ describe("readonly test", () => {
 
     expect(isReadonly(wrapped)).toBe(true)
     expect(isReadonly(original)).toBe(false)
+
+
+    expect(isReadonly(wrapped.foo)).toBe(true)
+    expect(isReadonly(original.foo)).toBe(false)
+
+    expect(wrapped.foo.bar).toBe(2)
+
   })
+
   test("set readonly data ,then warn ", () => {
     const original = {
       num: 1,
@@ -26,5 +34,4 @@ describe("readonly test", () => {
     wrapped.num++
     expect(console.warn).toBeCalled()
   })
-
 })
