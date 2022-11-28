@@ -21,26 +21,38 @@ class ReactiveEffect {
         this.active = true
         this.scheduler = scheduler
         this.options = {}
+        this.shouldTrack = false
+
     }
     run() {
+
+
+        if (!this.active) {
+            return this._fn()
+        }
+        shouldTrack = true
         activeEffect = this
-        return this._fn()
+        const result = this._fn()
+        shouldTrack = false
+
+        return result
     }
 
-    stop(){
-        if(this.active){
+    stop() {
+        if (this.active) {
             cleanupEffect(this)
-            if(this.onStop){
+            if (this.onStop) {
                 this.onStop()
             }
             this.active = false
         }
-        
+
     }
 }
 
 let targetMap = new WeakMap()
 let activeEffect: any;
+let shouldTrack: boolean //是否要收集依赖
 
 export function track(target: object, key: PropertyKey) {
     if (!activeEffect) return
@@ -54,16 +66,17 @@ export function track(target: object, key: PropertyKey) {
         dep = createDeps()
         depsMap.set(key, dep)
     }
+    if (!shouldTrack) return
     dep.add(activeEffect)
-    activeEffect.deps.push(dep) 
+    activeEffect.deps.push(dep)
 }
 export function trigger(target: object, key: PropertyKey) {
     let depsMap = targetMap.get(target)
     if (!depsMap) return;
-    let deps: Array<any> = [];
-    let dep = depsMap.get(key);
-    deps.push(...dep)
-    for (let effectFn of deps) {
+    let deps = depsMap.get(key);
+    let effectToRun: any[] = []
+    effectToRun.push(...deps)
+    for (let effectFn of effectToRun) {
         if (effectFn.scheduler) {
             effectFn.scheduler()
         } else {
@@ -76,15 +89,16 @@ function cleanupEffect(effect) {
     effect.deps.forEach(dep => {
         dep.delete(effect)
     })
+    effect.deps.length = 0
 }
 export function effect(fn: Function, options: any = {}) {
-    const _effect = new ReactiveEffect(fn,options.scheduler)
-    extend(_effect,options)
+    const _effect = new ReactiveEffect(fn, options.scheduler)
+    extend(_effect, options)
     _effect.run()
     const runner = _effect.run.bind(_effect)
-    runner.effect = _effect 
+    runner.effect = _effect
     return runner
 }
-export function stop(runner){
-    runner.effect.stop() 
+export function stop(runner) {
+    runner.effect.stop()
 }

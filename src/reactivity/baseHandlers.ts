@@ -12,7 +12,7 @@ function createGetter(isReadOnly = false) {
     const res = Reflect.get(target, key)
     if (key === ReactiveFlags.IS_REACTIVE) {
       return !isReadOnly
-    }else if (key === ReactiveFlags.IS_READONLY) {
+    } else if (key === ReactiveFlags.IS_READONLY) {
       return isReadOnly
     }
     if (!isReadOnly) {
@@ -25,7 +25,7 @@ function createGetter(isReadOnly = false) {
   }
 }
 
-function createSetter(isReadOnly = false) {
+function createSetter() {
   return function set(target, key, value) {
     const res = Reflect.set(target, key, value)
     trigger(target, key)
