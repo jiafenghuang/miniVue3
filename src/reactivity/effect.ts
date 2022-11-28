@@ -21,15 +21,15 @@ class ReactiveEffect {
         this.active = true
         this.scheduler = scheduler
         this.options = {}
-        this.shouldTrack = false
 
     }
     run() {
-
+        shouldTrack = false
 
         if (!this.active) {
             return this._fn()
         }
+
         shouldTrack = true
         activeEffect = this
         const result = this._fn()
@@ -55,20 +55,30 @@ let activeEffect: any;
 let shouldTrack: boolean //是否要收集依赖
 
 export function track(target: object, key: PropertyKey) {
-    if (!activeEffect) return
+    if (!isTracking()) return
+
     let depsMap = targetMap.get(target)
+
     if (!depsMap) {
         depsMap = new Map()
         targetMap.set(target, depsMap)
     }
     let dep = depsMap.get(key)
+
     if (!dep) {
         dep = createDeps()
         depsMap.set(key, dep)
     }
-    if (!shouldTrack) return
+
+    if (dep.has(activeEffect)) return
+
     dep.add(activeEffect)
     activeEffect.deps.push(dep)
+}
+function isTracking() {
+    // if (!shouldTrack) return
+    // if (!activeEffect) return
+    return shouldTrack && activeEffect !== undefined
 }
 export function trigger(target: object, key: PropertyKey) {
     let depsMap = targetMap.get(target)
