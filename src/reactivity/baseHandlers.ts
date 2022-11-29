@@ -48,6 +48,6 @@ export const readonlyHandler = {
   }
 }
 
-export const shallowReadonlyHandler = extend(readonlyHandler, {
+export const shallowReadonlyHandler = extend({}, readonlyHandler, {
   get: shallowReadonlyGet
 })
