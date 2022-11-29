@@ -69,23 +69,18 @@ export function track(target: object, key: PropertyKey) {
         dep = createDeps()
         depsMap.set(key, dep)
     }
+    trackEffect(dep)
 
+}
+export function trackEffect(dep) {
     if (dep.has(activeEffect)) return
 
     dep.add(activeEffect)
     activeEffect.deps.push(dep)
 }
-function isTracking() {
-    // if (!shouldTrack) return
-    // if (!activeEffect) return
-    return shouldTrack && activeEffect !== undefined
-}
-export function trigger(target: object, key: PropertyKey) {
-    let depsMap = targetMap.get(target)
-    if (!depsMap) return;
-    let deps = depsMap.get(key);
+export function triggerEffect(dep) {
     let effectToRun: any[] = []
-    effectToRun.push(...deps)
+    effectToRun.push(...dep)
     for (let effectFn of effectToRun) {
         if (effectFn.scheduler) {
             effectFn.scheduler()
@@ -93,6 +88,18 @@ export function trigger(target: object, key: PropertyKey) {
             effectFn.run()
         }
     }
+}
+
+export function isTracking() {
+    // if (!shouldTrack) return
+    // if (!activeEffect) return
+    return shouldTrack && activeEffect !== undefined
+}
+export function trigger(target: object, key: PropertyKey) {
+    let depsMap = targetMap.get(target)
+    if (!depsMap) return;
+    let dep = depsMap.get(key);
+    triggerEffect(dep)
 }
 
 function cleanupEffect(effect) {

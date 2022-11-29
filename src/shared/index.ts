@@ -5,3 +5,7 @@ const getType = (value: any) => {
 export const isObject = (value: any) => value !== null && typeof value === "object"
 
 export const extend = Object.assign
+
+export const hasChanged = (val, newVal) => {
+    return !Object.is(val, newVal)
+}

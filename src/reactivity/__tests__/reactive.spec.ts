@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { isReactive, reactive } from "../reactive";
+import { isProxy, isReactive, reactive } from "../reactive";
 
 test("test reactivty initial", () => {
     const original: { num: number } = {
@@ -13,6 +13,7 @@ test("test reactivty initial", () => {
 
     expect(isReactive(observed)).toBe(true)
     expect(isReactive(original)).toBe(false)
+    expect(isProxy(observed)).toBe(true)
 })
 
 test("test the nested obj", () => {
