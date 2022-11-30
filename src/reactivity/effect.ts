@@ -9,7 +9,7 @@
 */
 import { extend } from '../shared'
 import { createDeps } from './deps'
-class ReactiveEffect {
+export class ReactiveEffect {
     private _fn: Function
     deps: []
     onStop?: Function
