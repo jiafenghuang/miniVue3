@@ -62,7 +62,7 @@ describe("ref test", () => {
 
 
     })
-    test.only("test proxyRef", () => {
+    test("test proxyRef", () => {
         const user = {
             age: ref(10),
             name: "sheldon"
