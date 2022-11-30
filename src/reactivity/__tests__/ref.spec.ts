@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest"
 import { effect } from "../effect"
 import { reactive } from "../reactive";
-import { isRef, ref, unRef } from "../ref"
+import { isRef, proxyRef, ref, unRef } from "../ref"
 
 describe("ref test", () => {
     test("observe the basic ref", () => {
@@ -59,6 +59,29 @@ describe("ref test", () => {
 
         expect(unRef(a)).toBe(1)
         expect(unRef(b)).toBe(1)
+
+
+    })
+    test.only("test proxyRef", () => {
+        const user = {
+            age: ref(10),
+            name: "sheldon"
+        }
+        const proxyRefUser = proxyRef(user)
+        expect(user.age.value).toBe(10)
+
+        expect(proxyRefUser.age).toBe(10)
+        expect(proxyRefUser.name).toBe("sheldon")
+
+        proxyRefUser.age = 20
+        expect(proxyRefUser.age).toBe(20)
+        expect(user.age.value).toBe(20)
+
+
+        proxyRefUser.age = ref(30)
+        expect(proxyRefUser.age).toBe(30)
+        expect(user.age.value).toBe(30)
+
 
 
     })
