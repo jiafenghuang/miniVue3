@@ -1,3 +1,4 @@
+import { render } from "./renderer"
 import { createVnode } from "./vnode"
 
 export function createApp(rootComponent) {

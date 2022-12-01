@@ -4,7 +4,7 @@ export function render(vnode: any, container: any) {
     patch(vnode, container)
 }
 
-function patch(vnode: any, container: any) {
+export function patch(vnode: any, container: any) {
     processComponent(vnode, container)
 }
 function processComponent(vnode: any, container: any) {

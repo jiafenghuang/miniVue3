@@ -1,3 +1,5 @@
+import { patch } from "./renderer"
+
 export function createComponentInstance(vnode) {
     const component = {
         vnode,
@@ -15,13 +17,6 @@ export function setupRenderEffect(instance, container) {
     const subTree = instance.render()
 
     patch(subTree, container)
-}
-function initProps() {
-    throw new Error("Function not implemented.")
-}
-
-function initSlots() {
-    throw new Error("Function not implemented.")
 }
 
 function setupStatefulComponent(instance) {
@@ -45,4 +40,12 @@ function finishComponentSetup(instance) {
     if (Component.render) {
         instance.render = Component.render
     }
+}
+
+function initProps() {
+    throw new Error("Function not implemented.")
+}
+
+function initSlots() {
+    throw new Error("Function not implemented.")
 }
