@@ -2,7 +2,12 @@ import { h } from "../../lib/guide-mini-vue.esm.js"
 
 const App= {
     render(){
-        return h( "div", "Hi," + this.msg )
+        return h( "div", {
+            id:"root",
+            class:"test",
+            style:"color:red"
+
+        },[h("label",{class:"red"},"hi"), h("p",{class:"blue"},"blue")] )
     },
     setup(){
         return {
