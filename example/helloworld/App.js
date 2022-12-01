@@ -1,6 +1,6 @@
-import { h } from "vitest/dist/index-2f5b6168"
+import { h } from "../../lib/guide-mini-vue.esm.js"
 
-export const App= {
+const App= {
     render(){
         return h( "div", "Hi," + this.msg )
     },
@@ -11,3 +11,5 @@ export const App= {
     }
 }
 
+
+export default App
