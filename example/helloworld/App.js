@@ -7,7 +7,7 @@ const App= {
             class:"test",
             style:"color:red"
 
-        },[h("label",{class:"red"},"hi"), h("p",{class:"blue"},"blue")] )
+        },[h("label",{class:"red"},"hi"+this.msg), h("p",{class:"blue"},"blue")] )
     },
     setup(){
         return {

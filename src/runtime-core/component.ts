@@ -13,20 +13,34 @@ export function setupComponent(instance) {
     //initSlots()
     setupStatefulComponent(instance)
 }
-export function setupRenderEffect(instance, container) {
-    const subTree = instance.render()
-
-    patch(subTree, container)
-}
-
 function setupStatefulComponent(instance) {
     const component = instance.type
+
+    //ctx
+    instance.proxy = new Proxy({},{
+        get(target,key){
+            //setupState
+            const {setupState} = instance
+            if(key in setupState){
+                return setupState[key]
+            }
+        },
+    })
     const { setup } = component
     if (setup) {
         const setupResult = setup()
         handleSetupResult(instance, setupResult)
     }
 }
+export function setupRenderEffect(instance, container) {
+    const { proxy } = instance
+
+    const subTree = instance.render.call(proxy)
+
+    patch(subTree, container)
+}
+
+
 
 function handleSetupResult(instance, setupResult: any) {
     if (typeof setupResult === "object") {
