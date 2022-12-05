@@ -17,12 +17,12 @@ function processComponent(vnode: any, container: any) {
     mountComponent(vnode, container)
 }
 
-function mountComponent(vnode: any, container) {
-    const instance = createComponentInstance(vnode)
+function mountComponent(initialVnode: any, container) {
+    const instance = createComponentInstance(initialVnode)
     setupComponent(instance)
-    setupRenderEffect(instance,vnode, container)
+    setupRenderEffect(instance,initialVnode, container)
 }
-function setupRenderEffect(instance,vnode, container) {
+function setupRenderEffect(instance,initialVnode, container) {
     const { proxy } = instance
 
     const subTree = instance.render.call(proxy)
@@ -30,7 +30,7 @@ function setupRenderEffect(instance,vnode, container) {
     patch(subTree, container)
 
     //全部element 都处理完成,subtre
-    vnode.el = subTree.el
+    initialVnode.el = subTree.el
 }
 
 
