@@ -1,5 +1,5 @@
 import { isObject } from './../shared/index';
-import { createComponentInstance, setupComponent, setupRenderEffect } from "./component"
+import { createComponentInstance, setupComponent } from "./component"
 
 export function render(vnode: any, container: any) {
     patch(vnode, container)
@@ -20,15 +20,26 @@ function processComponent(vnode: any, container: any) {
 function mountComponent(vnode: any, container) {
     const instance = createComponentInstance(vnode)
     setupComponent(instance)
-    setupRenderEffect(instance, container)
+    setupRenderEffect(instance,vnode, container)
 }
+function setupRenderEffect(instance,vnode, container) {
+    const { proxy } = instance
+
+    const subTree = instance.render.call(proxy)
+
+    patch(subTree, container)
+
+    //全部element 都处理完成,subtre
+    vnode.el = subTree.el
+}
+
 
 function processElement(vnode, container) {
     mountElement(vnode, container)
 }
 function mountElement(vnode: any, container: any) {
     const { type, children, props } = vnode
-    const el = document.createElement(type)
+    const el =(vnode.el = document.createElement(type))
     for (let key in props) {
         const val = props[key]
         el.setAttribute(key, val)
@@ -48,3 +59,4 @@ function mountChildren(vnode, container) {
         patch(child, container)
     })
 }
+

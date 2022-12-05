@@ -1,4 +1,4 @@
-import { patch } from "./renderer"
+import { publicInstanceProxyHandlers } from "./componentPublicInstance"
 
 export function createComponentInstance(vnode) {
     const component = {
@@ -17,29 +17,13 @@ function setupStatefulComponent(instance) {
     const component = instance.type
 
     //ctx
-    instance.proxy = new Proxy({},{
-        get(target,key){
-            //setupState
-            const {setupState} = instance
-            if(key in setupState){
-                return setupState[key]
-            }
-        },
-    })
+    instance.proxy = new Proxy({_:instance},publicInstanceProxyHandlers)
     const { setup } = component
     if (setup) {
         const setupResult = setup()
         handleSetupResult(instance, setupResult)
     }
 }
-export function setupRenderEffect(instance, container) {
-    const { proxy } = instance
-
-    const subTree = instance.render.call(proxy)
-
-    patch(subTree, container)
-}
-
 
 
 function handleSetupResult(instance, setupResult: any) {
