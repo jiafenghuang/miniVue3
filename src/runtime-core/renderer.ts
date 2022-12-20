@@ -7,10 +7,10 @@ export function render(vnode: any, container: any) {
 
 export function patch(vnode: any, container: any) {
     // TODO判断是否为element，是则处理element，不再递归使用patch
-    const vnodeType = vnode.type
-    if (typeof vnodeType === "string") {
+    const { shapeFlag } = vnode
+    if (shapeFlag & shapeFlag.ELEMENT) {
         processElement(vnode, container)
-    } else if (isObject(vnodeType))
+    } else if (shapeFlag & shapeFlag.STATEFUL_COMPONENT)
         processComponent(vnode, container)
 }
 function processComponent(vnode: any, container: any) {
@@ -38,16 +38,16 @@ function processElement(vnode, container) {
     mountElement(vnode, container)
 }
 function mountElement(vnode: any, container: any) {
-    const { type, children, props } = vnode
+    const { type, children, props, shapeFlag } = vnode
     const el =(vnode.el = document.createElement(type))
     for (let key in props) {
         const val = props[key]
         el.setAttribute(key, val)
     }
-    if (Array.isArray(children)) {
+    if (shapeFlag & shapeFlag.ARRAY_CHILDREN) {
         mountChildren(vnode, el)
 
-    } else if (typeof children === "string") {
+    } else if (shapeFlag & shapeFlag.TEXT_CHILDREN) {
         el.textContent = children
     }
     container.append(el)
