@@ -6,9 +6,10 @@ const App= {
         return h( "div", {
             id:"root",
             class:"test",
-            style:"color:red"
-
-        },[h("label",{class:"red"},"hi"+this.msg), h("p",{class:"blue"},"blue")] )
+            style:"color:red",
+            onClick:()=>{
+                console.log("11")
+            }},'sheldon')
     },
     setup(){
         return {
