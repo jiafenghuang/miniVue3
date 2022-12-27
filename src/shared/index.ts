@@ -10,3 +10,4 @@ export const hasChanged = (val, newVal) => {
     return !Object.is(val, newVal)
 }
 export const isOn=( key:string )=> /^on[A-Z]/.test(key)
+export const hasOwn =(Obj, key)=> Object.prototype.hasOwnProperty.call(Obj, key)
