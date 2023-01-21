@@ -2,6 +2,7 @@ import { shallowReadonly } from "../reactivity/reactive"
 import { emit } from "./componentEmit"
 import { initProps } from "./componentProps"
 import { publicInstanceProxyHandlers } from "./componentPublicInstance"
+import { initSlots } from "./componentSlots"
 
 export function createComponentInstance(vnode) {
     const component = {
@@ -9,6 +10,7 @@ export function createComponentInstance(vnode) {
         type: vnode.type,
         setupState:{},
         props:{},
+        slots:{},
         emit:()=>{}
     }
     component.emit = emit.bind(null, component) as any //偏函数，预设一个instance值
@@ -16,8 +18,8 @@ export function createComponentInstance(vnode) {
 }
 
 export function setupComponent(instance) {
-    initProps(instance,instance.vnode.props)
-    //initSlots()
+    initProps(instance, instance.vnode.props)
+    initSlots(instance, instance.vnode.children)
     setupStatefulComponent(instance)
 }
 function setupStatefulComponent(instance) {
@@ -47,9 +49,4 @@ function finishComponentSetup(instance) {
     if (Component.render) {
         instance.render = Component.render
     }
-}
-
-
-function initSlots() {
-    throw new Error("Function not implemented.")
 }

@@ -1,3 +1,4 @@
+  //instance.slots = Array.isArray(children) ? children : [children]
 import { extend, isObject } from "../shared"
 import { track, trigger } from "./effect"
 import { reactive, ReactiveFlags, readonly } from "./reactive"

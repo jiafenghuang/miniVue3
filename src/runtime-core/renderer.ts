@@ -23,6 +23,7 @@ function mountComponent(initialVnode: any, container) {
     setupComponent(instance)
     setupRenderEffect(instance,initialVnode, container)
 }
+
 function setupRenderEffect(instance,initialVnode, container) {
     const { proxy } = instance
 
@@ -38,6 +39,7 @@ function setupRenderEffect(instance,initialVnode, container) {
 function processElement(vnode, container) {
     mountElement(vnode, container)
 }
+
 function mountElement(vnode: any, container: any) {
     const { type, children, props, shapeFlag } = vnode
     const el =(vnode.el = document.createElement(type))
@@ -65,4 +67,3 @@ function mountChildren(vnode, container) {
         patch(child, container)
     })
 }
-
